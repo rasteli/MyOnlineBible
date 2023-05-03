@@ -7,6 +7,7 @@ export default {
       "gray-100": "#E1E1E1",
       "gray-300": "#D2D2D2",
       "gray-500": "#747474",
+      "gray-600": "#535356",
       "gray-700": "#202024"
     },
     fontFamily: {

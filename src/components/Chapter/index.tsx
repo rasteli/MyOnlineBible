@@ -1,5 +1,7 @@
+import { Fragment } from "react"
 import colors from "tailwindcss/colors"
 import { InfinitySpin } from "react-loader-spinner"
+
 import { useBook } from "../../contexts/BookContext"
 import { useViewport } from "../../hooks/useViewport"
 
@@ -52,14 +54,18 @@ export function Chapter() {
 
   return (
     <div
-      className="m-10 text-justify text-lg"
+      className="m-10 text-left text-lg"
       onClick={async e => await handleClick(e.pageX)}
     >
-      {paragraphs.map(verse => (
-        <p key={verse.number} className="mb-3">
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          {verse.text}
-        </p>
+      {chapter.verses.map((verse, index) => (
+        <Fragment key={verse.text}>
+          <span className="text-gray-600 font-bold text-md align-top">
+            {" "}
+            {verse.number}{" "}
+          </span>
+          <span className="text-gray-700">{verse.text}</span>
+          {index % 5 === 0 && index !== 0 && <div className="mb-3" />}
+        </Fragment>
       ))}
     </div>
   )
