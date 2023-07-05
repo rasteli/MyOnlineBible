@@ -1,9 +1,9 @@
-import { Fragment } from "react"
-import colors from "tailwindcss/colors"
-import { InfinitySpin } from "react-loader-spinner"
+import { Fragment } from 'react'
+import colors from 'tailwindcss/colors'
+import { InfinitySpin } from 'react-loader-spinner'
 
-import { useBook } from "../../contexts/BookContext"
-import { useViewport } from "../../hooks/useViewport"
+import { useBook } from '../../contexts/BookContext'
+import { useViewport } from '../../hooks/useViewport'
 
 export function Chapter() {
   const { aboveThreshold } = useViewport()
@@ -19,14 +19,14 @@ export function Chapter() {
       text: chapter.verses
         .slice(i, i + 5)
         .map(verse => verse.text)
-        .join(" ")
+        .join(' ')
     })
   }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center">
-        <InfinitySpin width="200" color={colors.gray["700"]} />
+        <InfinitySpin width="200" color={colors.gray['700']} />
       </div>
     )
   }
@@ -36,7 +36,7 @@ export function Chapter() {
 
     if (x < threshold && chapter!.chapter.number > 1) {
       await fetchChapter(
-        "nvi",
+        'nvi',
         chapter!.book.abbrev.pt,
         chapter!.chapter.number - 1
       )
@@ -45,7 +45,7 @@ export function Chapter() {
       chapter!.chapter.number < chapter!.totalChapters
     ) {
       await fetchChapter(
-        "nvi",
+        'nvi',
         chapter!.book.abbrev.pt,
         chapter!.chapter.number + 1
       )
@@ -60,8 +60,8 @@ export function Chapter() {
       {chapter.verses.map((verse, index) => (
         <Fragment key={verse.text}>
           <span className="text-gray-600 font-bold text-md align-top">
-            {" "}
-            {verse.number}{" "}
+            {' '}
+            {verse.number}{' '}
           </span>
           <span className="text-gray-700">{verse.text}</span>
           {index % 5 === 0 && index !== 0 && <div className="mb-3" />}

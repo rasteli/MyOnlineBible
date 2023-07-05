@@ -1,13 +1,13 @@
-import clsx from "clsx"
-import { useEffect, useRef } from "react"
-import autoAnimate from "@formkit/auto-animate"
-import { CaretDown, CaretUp } from "phosphor-react"
-import * as ScrollArea from "@radix-ui/react-scroll-area"
-import * as Dropdown from "@radix-ui/react-dropdown-menu"
-import * as ColPrimitive from "@radix-ui/react-collapsible"
+import clsx from 'clsx'
+import { useEffect, useRef } from 'react'
+import autoAnimate from '@formkit/auto-animate'
+import { CaretDown, CaretUp } from 'phosphor-react'
+import * as ScrollArea from '@radix-ui/react-scroll-area'
+import * as Dropdown from '@radix-ui/react-dropdown-menu'
+import * as ColPrimitive from '@radix-ui/react-collapsible'
 
-import { useViewport } from "../../hooks/useViewport"
-import { Book, useBook } from "../../contexts/BookContext"
+import { useViewport } from '../../hooks/useViewport'
+import { Book, useBook } from '../../contexts/BookContext'
 
 interface CollapsibleProps {
   books: Book[]
@@ -31,10 +31,10 @@ export function Collapsible({ books, from, open, toggle }: CollapsibleProps) {
     <ColPrimitive.Root open={open} onOpenChange={toggle}>
       <ColPrimitive.Trigger
         className={clsx(
-          "text-md flex items-center justify-between w-full rounded-xl p-3 font-bold transition-all duration-200",
+          'text-md flex items-center justify-between w-full rounded-xl p-3 font-bold transition-all duration-200',
           {
-            "bg-gray-300 text-gray-700": open,
-            "text-gray-500 hover:text-gray-700": !open
+            'bg-gray-300 text-gray-700': open,
+            'text-gray-500 hover:text-gray-700': !open
           }
         )}
       >
@@ -55,20 +55,20 @@ export function Collapsible({ books, from, open, toggle }: CollapsibleProps) {
                 <Dropdown.Portal>
                   <Dropdown.Content
                     align="start"
-                    className="grid grid-cols-6 gap-3 bg-gray-300 p-3 rounded-xl shadow-mob"
+                    className="grid grid-cols-6 gap-3 bg-gray-300 p-3 rounded-xl shadow-mob max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-gray-300"
                   >
                     {[...Array(book.chapters).keys()].map(chapter => (
                       <Dropdown.Item
                         key={chapter}
                         className={clsx(
-                          "text-gray-500 text-center hover:text-gray-700 transition-colors duration 200ms cursor-pointer",
+                          'text-gray-500 text-center hover:text-gray-700 transition-colors duration 200ms cursor-pointer',
                           {
-                            "text-md": aboveThreshold,
-                            "text-lg": !aboveThreshold
+                            'text-md': aboveThreshold,
+                            'text-lg': !aboveThreshold
                           }
                         )}
                         onSelect={() =>
-                          fetchChapter("nvi", book.abbrev.pt, chapter + 1)
+                          fetchChapter('nvi', book.abbrev.pt, chapter + 1)
                         }
                       >
                         {chapter + 1}
