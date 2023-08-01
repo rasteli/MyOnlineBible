@@ -1,8 +1,7 @@
-import { Fragment } from 'react'
 import colors from 'tailwindcss/colors'
 import { InfinitySpin } from 'react-loader-spinner'
 
-import { useBook } from '../../contexts/BookContext'
+import { useBook, Chapter as IChapter } from '../../contexts/BookContext'
 import { useViewport } from '../../hooks/useViewport'
 
 export function Chapter() {
@@ -11,19 +10,8 @@ export function Chapter() {
 
   if (!chapter) return null
 
-  const paragraphs: { number: number; text: string }[] = []
-
-  for (let i = 0; i < chapter.verses.length; i += 5) {
-    paragraphs.push({
-      number: chapter.verses[i].number,
-      text: chapter.verses
-        .slice(i, i + 5)
-        .map(verse => verse.text)
-        .join(' ')
-    })
-  }
-
   if (loading) {
+    // TODO: Skeleton screen
     return (
       <div className="flex items-center justify-center">
         <InfinitySpin width="200" color={colors.gray['700']} />
@@ -31,41 +19,37 @@ export function Chapter() {
     )
   }
 
-  async function handleClick(x: number) {
+  async function handleFetchChapter(x: number, chapter: IChapter) {
     const threshold = aboveThreshold ? 900 : 210
 
-    if (x < threshold && chapter!.chapter.number > 1) {
-      await fetchChapter(
-        'nvi',
-        chapter!.book.abbrev.pt,
-        chapter!.chapter.number - 1
-      )
+    if (x < threshold && chapter.chapter.number > 1) {
+      // This will fetch the previous chapter when the user clicks
+      // on the left side of the screen.
+      await fetchChapter('nvi', chapter.book, chapter.chapter.number - 1)
     } else if (
       x > threshold &&
-      chapter!.chapter.number < chapter!.totalChapters
+      chapter.chapter.number < chapter.book.chapters
     ) {
-      await fetchChapter(
-        'nvi',
-        chapter!.book.abbrev.pt,
-        chapter!.chapter.number + 1
-      )
+      // This will fetch the next chapter when the user clicks
+      // on the right side of the screen.
+      await fetchChapter('nvi', chapter.book, chapter.chapter.number + 1)
     }
   }
 
   return (
     <div
       className="m-10 text-left text-lg"
-      onClick={async e => await handleClick(e.pageX)}
+      onClick={e => handleFetchChapter(e.pageX, chapter)}
     >
       {chapter.verses.map((verse, index) => (
-        <Fragment key={verse.text}>
+        <p key={verse.text} className="inline">
           <span className="text-gray-600 font-bold text-md align-top">
             {' '}
             {verse.number}{' '}
           </span>
           <span className="text-gray-700">{verse.text}</span>
-          {index % 5 === 0 && index !== 0 && <div className="mb-3" />}
-        </Fragment>
+          {(index + 1) % 5 === 0 && <div className="mb-3" />}
+        </p>
       ))}
     </div>
   )

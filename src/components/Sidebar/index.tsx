@@ -25,13 +25,11 @@ export function Sidebar() {
   const vt_books = books.filter(book => book.testament === 'VT')
   const nt_books = books.filter(book => book.testament === 'NT')
 
+  const chapterAbbrev = chapter?.book.abbrev.pt
+
   function toggle() {
     setOpen(!open)
   }
-
-  const capAbbrev =
-    chapter?.book.abbrev.pt.charAt(0).toUpperCase() +
-    chapter?.book.abbrev.pt.slice(1)!
 
   return (
     <aside
@@ -46,7 +44,10 @@ export function Sidebar() {
         <h1 className="font-bold text-2xl text-gray-700">
           {chapter ? (
             <>
-              {capAbbrev === 'Job' ? 'Jó' : capAbbrev} {chapter?.chapter.number}
+              <span className="capitalize">
+                {chapterAbbrev === 'job' ? 'Jó' : chapterAbbrev}
+              </span>{' '}
+              {chapter?.chapter.number}
             </>
           ) : (
             'Bíblia Sagrada'

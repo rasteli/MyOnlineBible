@@ -4,11 +4,10 @@ import {
   useState,
   useEffect,
   ReactNode
-} from "react"
-import { api } from "../lib/axios"
+} from 'react'
+import { api } from '../lib/axios'
 
 export interface Book {
-  id: number
   abbrev: {
     [key: string]: string
   }
@@ -19,7 +18,7 @@ export interface Book {
   testament: string
 }
 
-interface Chapter {
+export interface Chapter {
   book: Book
   chapter: {
     number: number
@@ -29,18 +28,13 @@ interface Chapter {
     number: number
     text: string
   }[]
-  totalChapters: number
 }
 
 interface BookContextData {
   loading: boolean
   books: Book[]
   chapter: Chapter | null
-  fetchChapter: (
-    version: string,
-    book: string,
-    chapter: number
-  ) => Promise<void>
+  fetchChapter: (version: string, book: Book, chapter: number) => Promise<void>
 }
 
 const BookContext = createContext({} as BookContextData)
@@ -61,38 +55,42 @@ export function BookProvider({ children }: BookProviderProps) {
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-      const response = await api.get<Book[]>("/books")
-
-      setLoading(false)
-      setBooks(response.data)
-    })()
-    ;(async () => {
-      const chapter = localStorage.getItem("@biblia:chapter")
+      const response = await api.get<Book[]>('/books')
+      const chapter = localStorage.getItem('@biblia:chapter')
 
       if (chapter) {
         setChapter(JSON.parse(chapter))
       }
+
+      setBooks(response.data)
+      setLoading(false)
     })()
   }, [])
 
-  async function fetchChapter(version: string, book: string, chapter: number) {
+  async function fetchChapter(version: string, book: Book, chapter: number) {
     setLoading(true)
 
+    // TODO: Caching with React Query
     const response = await api.get<Chapter>(
-      `/verses/${version}/${book}/${chapter}`
+      `/verses/${version}/${book.abbrev.pt}/${chapter}`
     )
 
-    const totalChapters = books.find(b => b.abbrev.pt === book)?.chapters!
+    // This is necessary because the book property of the chapter object
+    // returned by the endpoint above doesn't contain the number of chapters.
+    const chapters = books.find(b => b.abbrev.pt === book.abbrev.pt)!.chapters
 
     const data = {
       ...response.data,
-      totalChapters
+      book: {
+        ...response.data.book,
+        chapters
+      }
     }
 
     setLoading(false)
     setChapter(data)
 
-    localStorage.setItem("@biblia:chapter", JSON.stringify(data))
+    localStorage.setItem('@biblia:chapter', JSON.stringify(data))
   }
 
   const value: BookContextData = {

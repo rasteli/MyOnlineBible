@@ -46,11 +46,9 @@ export function Collapsible({ books, from, open, toggle }: CollapsibleProps) {
           <ScrollArea.Viewport className="w-full h-full">
             {books.map(book => (
               <Dropdown.Root key={book.name}>
-                <div className="ml-5">
-                  <Dropdown.Trigger className="text-md text-gray-500 hover:text-gray-700 transition-colors duration 200ms py-1">
-                    {book.name}
-                  </Dropdown.Trigger>
-                </div>
+                <Dropdown.Trigger className="block ml-5 text-md text-gray-500 hover:text-gray-700 transition-colors duration 200ms py-1">
+                  {book.name}
+                </Dropdown.Trigger>
 
                 <Dropdown.Portal>
                   <Dropdown.Content
@@ -67,9 +65,7 @@ export function Collapsible({ books, from, open, toggle }: CollapsibleProps) {
                             'text-lg': !aboveThreshold
                           }
                         )}
-                        onSelect={() =>
-                          fetchChapter('nvi', book.abbrev.pt, chapter + 1)
-                        }
+                        onSelect={() => fetchChapter('nvi', book, chapter + 1)}
                       >
                         {chapter + 1}
                       </Dropdown.Item>
