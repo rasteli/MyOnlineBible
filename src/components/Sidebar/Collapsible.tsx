@@ -1,22 +1,29 @@
-import clsx from 'clsx'
-import { useEffect, useRef } from 'react'
-import autoAnimate from '@formkit/auto-animate'
-import { CaretDown, CaretUp } from 'phosphor-react'
-import * as ScrollArea from '@radix-ui/react-scroll-area'
-import * as Dropdown from '@radix-ui/react-dropdown-menu'
-import * as ColPrimitive from '@radix-ui/react-collapsible'
+import clsx from "clsx"
+import { useEffect, useRef } from "react"
+import autoAnimate from "@formkit/auto-animate"
+import { CaretDown, CaretUp } from "phosphor-react"
+import * as ScrollArea from "@radix-ui/react-scroll-area"
+import * as Dropdown from "@radix-ui/react-dropdown-menu"
+import * as ColPrimitive from "@radix-ui/react-collapsible"
 
-import { useViewport } from '../../hooks/useViewport'
-import { Book, useBook } from '../../contexts/BookContext'
+import { useViewport } from "../../hooks/useViewport"
+import { Book, useBook } from "../../contexts/BookContext"
 
 interface CollapsibleProps {
   books: Book[]
   from: string
   open: boolean
   toggle: () => void
+  toggleMenu: () => void
 }
 
-export function Collapsible({ books, from, open, toggle }: CollapsibleProps) {
+export function Collapsible({
+  books,
+  from,
+  open,
+  toggle,
+  toggleMenu
+}: CollapsibleProps) {
   const parent = useRef(null)
   const { fetchChapter } = useBook()
   const { aboveThreshold } = useViewport()
@@ -27,14 +34,19 @@ export function Collapsible({ books, from, open, toggle }: CollapsibleProps) {
     }
   }, [parent])
 
+  async function selectChapter(book: Book, chapter: number) {
+    toggleMenu()
+    await fetchChapter("nvi", book, chapter + 1)
+  }
+
   return (
     <ColPrimitive.Root open={open} onOpenChange={toggle}>
       <ColPrimitive.Trigger
         className={clsx(
-          'text-md flex items-center justify-between w-full rounded-xl p-3 font-bold transition-all duration-200',
+          "text-md flex items-center justify-between w-full rounded-xl p-3 font-bold transition-all duration-200",
           {
-            'bg-gray-300 text-gray-700': open,
-            'text-gray-500 hover:text-gray-700': !open
+            "bg-gray-300 text-gray-700": open,
+            "text-gray-500 hover:text-gray-700": !open
           }
         )}
       >
@@ -59,13 +71,13 @@ export function Collapsible({ books, from, open, toggle }: CollapsibleProps) {
                       <Dropdown.Item
                         key={chapter}
                         className={clsx(
-                          'text-gray-500 text-center hover:text-gray-700 transition-colors duration 200ms cursor-pointer',
+                          "text-gray-500 text-center hover:text-gray-700 transition-colors duration 200ms cursor-pointer",
                           {
-                            'text-md': aboveThreshold,
-                            'text-lg': !aboveThreshold
+                            "text-md": aboveThreshold,
+                            "text-lg": !aboveThreshold
                           }
                         )}
-                        onSelect={() => fetchChapter('nvi', book, chapter + 1)}
+                        onSelect={() => selectChapter(book, chapter)}
                       >
                         {chapter + 1}
                       </Dropdown.Item>

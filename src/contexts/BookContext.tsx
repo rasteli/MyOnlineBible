@@ -4,8 +4,8 @@ import {
   useState,
   useEffect,
   ReactNode
-} from 'react'
-import { api } from '../lib/axios'
+} from "react"
+import { api } from "../lib/axios"
 
 export interface Book {
   abbrev: {
@@ -55,8 +55,10 @@ export function BookProvider({ children }: BookProviderProps) {
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-      const response = await api.get<Book[]>('/books')
-      const chapter = localStorage.getItem('@biblia:chapter')
+
+      // TODO: Caching with React Query
+      const response = await api.get<Book[]>("/books")
+      const chapter = localStorage.getItem("@biblia:chapter")
 
       if (chapter) {
         setChapter(JSON.parse(chapter))
@@ -90,7 +92,7 @@ export function BookProvider({ children }: BookProviderProps) {
     setLoading(false)
     setChapter(data)
 
-    localStorage.setItem('@biblia:chapter', JSON.stringify(data))
+    localStorage.setItem("@biblia:chapter", JSON.stringify(data))
   }
 
   const value: BookContextData = {
